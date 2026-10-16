@@ -57,7 +57,7 @@ func formatAlert(a Alert) string {
 		if a.ResolvedTS != nil {
 			resolvedTS := time.UnixMilli(*a.ResolvedTS)
 			prettyResolvedTS := resolvedTS.Format(messageTimeFormat)
-			status = fmt.Sprintf("%s at %s", status, prettyResolvedTS)
+			status = fmt.Sprintf("%s at *%s*", status, prettyResolvedTS)
 		}
 	}
 
@@ -67,10 +67,11 @@ func formatAlert(a Alert) string {
 	}
 
 	msgStrings := []string{
-		fmt.Sprintf("## Alert: %s *%s*", a.Data.Type, ts.Format(messageTimeFormat)),
+		fmt.Sprintf("## Alert %s", a.Data.Type),
 		fmt.Sprintf("**Level**: %s", a.Level),
+		fmt.Sprintf("**At**: *%s*", ts.Format(messageTimeFormat)),
 		fmt.Sprintf("**Status**: %s", status),
-		fmt.Sprintf("**%s**: %s", a.Target.Type, a.Target.ID),
+		fmt.Sprintf("**%s**: `%s`", a.Target.Type, a.Target.ID),
 		"```json",
 		string(prettyData),
 		"```",
