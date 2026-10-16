@@ -45,7 +45,7 @@ type Alert struct {
 	TS int64 `json:"ts"`
 }
 
-func (a Alert) String() string {
+func formatAlert(a Alert) string {
 	ts := time.UnixMilli(a.TS)
 
 	status := "Is not resolved"
@@ -61,14 +61,22 @@ func (a Alert) String() string {
 		}
 	}
 
-	msgStrings := []string{
-		fmt.Sprintf("Alert: %s", ts.Format(messageTimeFormat)),
-		fmt.Sprintf("Level: %s", a.Level),
-		fmt.Sprintf("Status: %s", status),
-		fmt.Sprintf("%s: %s", a.Target.Type, a.Target.ID),
+	prettyData, err := json.MarshalIndent(a.Data.Data, "", "  ")
+	if err != nil {
+		prettyData = a.Data.Data
 	}
 
-	return strings.Join(msgStrings, "\n")
+	msgStrings := []string{
+		fmt.Sprintf("## Alert: %s *%s*", a.Data.Type, ts.Format(messageTimeFormat)),
+		fmt.Sprintf("**Level**: %s", a.Level),
+		fmt.Sprintf("**Status**: %s", status),
+		fmt.Sprintf("**%s**: %s", a.Target.Type, a.Target.ID),
+		"```json",
+		string(prettyData),
+		"```",
+	}
+
+	return strings.Join(msgStrings, "\n\n")
 }
 
 func sendMessage(ctx context.Context, token string, chatID int64, msg string) error {
@@ -142,7 +150,7 @@ func (h *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := sendMessage(r.Context(), h.token, h.chatID, alert.String()); err != nil {
+	if err := sendMessage(r.Context(), h.token, h.chatID, formatAlert(alert)); err != nil {
 		h.logger.Error("send message", "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
