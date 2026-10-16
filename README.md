@@ -12,15 +12,15 @@ services:
 # ---- Alerter --------------------
     alerter:
         image: ghcr.io/avillx/alerter:latest
-    restart: unless-stopped
-    environment:
-        ## Telegram bot token *Required*
-        - BOT_TOKEN=$BOT_TOKEN
+        restart: unless-stopped
+        environment:
+            ## Telegram bot token *Required*
+            - BOT_TOKEN=$BOT_TOKEN
 
-        ## Telegram ID of chat sink *Required*
-        - CHAT_ID=$CHAT_ID
+            ## Telegram ID of chat sink *Required*
+            - CHAT_ID=$CHAT_ID
 
-    network:
-        ## container must be in one network with komado
-        - komado
+        network:
+            ## container must be in one network with komado
+            - komado
 ```
