@@ -19,5 +19,6 @@ RUN adduser -D $USER
 USER $USER
 
 COPY --from=builder /build/alerter .
+COPY ./LICENSE .
 
 ENTRYPOINT ["./alerter"]
