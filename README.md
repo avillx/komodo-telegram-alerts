@@ -1,26 +1,27 @@
-# Simple komodo telegram alerter
+# Simple Komodo Telegram Alerter
 
-A simple endpoint to accepts komado alerts and sends it in selected telegram chat 
+A simple server that accepts Komodo alerts and forwards them to a selected Telegram chat.
 
 ## Config
-Custom endpoint in comado settings: `http://alerter:9000`
+
+Add a custom webhook in the Komodo alert settings: http://alerter:9000
 
 Compose:
 ```yaml
 services:
 
-# ---- Alerter --------------------
+  # ---- Alerter --------------------
     alerter:
         image: ghcr.io/avillx/alerter:latest
         restart: unless-stopped
         environment:
-            ## Telegram bot token *Required*
-            - BOT_TOKEN=$BOT_TOKEN
+        # Telegram bot token (required)
+        - BOT_TOKEN=${BOT_TOKEN}
 
-            ## Telegram ID of chat sink *Required*
-            - CHAT_ID=$CHAT_ID
+        # Telegram chat ID to send alerts to (required)
+        - CHAT_ID=${CHAT_ID}
 
-        networks:
-            ## container must be in one network with komado
-            - komado
+    networks:
+        # Must be in the same network as Komodo
+        - komodo
 ```
