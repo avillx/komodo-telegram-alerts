@@ -20,7 +20,7 @@ services:
             ## Telegram ID of chat sink *Required*
             - CHAT_ID=$CHAT_ID
 
-        network:
+        networks:
             ## container must be in one network with komado
             - komado
 ```

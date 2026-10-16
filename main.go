@@ -86,10 +86,12 @@ func sendMessage(ctx context.Context, token string, chatID int64, msg string) er
 	ctx, cancel := context.WithTimeout(ctx, _10Sec)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, "GET", endpoint, bytes.NewReader(body))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(body))
 	if err != nil {
 		return fmt.Errorf("request: %w", stripURLErr(err))
 	}
+
+	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
